@@ -68,6 +68,9 @@ public class ClusterFixture : IDisposable, ISingletonDependency
                     {
                         o.Address = "XXXXX";
                         o.PrivateKey = "XXXXX";
+                        o.KeyStorePath =
+                            "/Users/jasonlu/.local/share/aelf/keys/2iLUeZGW4xdgyUNUUiMDDejuSvq9Mc5gZsFxKSutp6Cr78ZrDx.json";
+                        o.KeyStorePassword = "admin123";
                     });
 
                     var dic = new Dictionary<string, int>
@@ -142,6 +145,7 @@ public class ClusterFixture : IDisposable, ISingletonDependency
                     {
                         Mapper = sp.GetRequiredService<IMapper>()
                     });
+                    services.AddSingleton<IAElfKeyStoreService, AElfKeyStoreService>();
                     services.AddTransient<IMapperAccessor>(provider => provider.GetRequiredService<MapperAccessor>());
                 })
                 .AddSimpleMessageStreamProvider(CAVerifierServerApplicationConsts.MessageStreamName)

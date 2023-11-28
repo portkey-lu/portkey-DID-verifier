@@ -1,11 +1,15 @@
-﻿using CAVerifierServer.Grains.Options;
+﻿using CAVerifierServer.Grains.Grain;
+using CAVerifierServer.Grains.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 using Volo.Abp.Timing;
 
 namespace CAVerifierServer.Grains;
-[DependsOn(typeof(CAVerifierServerApplicationContractsModule), typeof(AbpAutoMapperModule))]
+[DependsOn(
+    typeof(CAVerifierServerApplicationContractsModule),
+    typeof(AbpAutoMapperModule)
+)]
 public class CAVerifierServerGrainsModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -20,5 +24,6 @@ public class CAVerifierServerGrainsModule : AbpModule
             options.Kind = DateTimeKind.Utc;
         });
         Configure<AppleAuthOptions>(configuration.GetSection("AppleAuth"));
+        context.Services.AddSingleton<IAElfKeyStoreService, AElfKeyStoreService>();
     }
 }
