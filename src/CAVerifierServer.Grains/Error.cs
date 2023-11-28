@@ -15,6 +15,7 @@ public static class Error
     public const string SendVerificationRequestErrorLogPrefix = "SendVerificationRequest falied. Error:";
     public const string VerifyAppleErrorLogPrefix = "Verify apple identity token falied.Error:";
     public const int InvalidVerifierSessionId = 20010;
+    public const int FileNotExist = 20011;
     public static readonly Dictionary<int, string> Message = new()
     {
         { Unsupported, "Unsupported Type" },
@@ -26,7 +27,8 @@ public static class Error
         { Timeout, "Timeout" },
         { Verified, "Already Verified" },
         { IdNotExist,"There is no such entity" },
-        { InvalidVerifierSessionId,"LoginGuardianIdentifier does not match the VerifierSessionId" }
+        { InvalidVerifierSessionId,"LoginGuardianIdentifier does not match the VerifierSessionId" },
+        { FileNotExist,"File not exist" }
     };
     
 }

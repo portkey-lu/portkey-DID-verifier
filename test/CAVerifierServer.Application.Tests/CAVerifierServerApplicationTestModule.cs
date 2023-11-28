@@ -21,6 +21,8 @@ public class CAVerifierServerApplicationTestModule : AbpModule
         {
             o.PrivateKey = "XXXXXXXX";
             o.Address = "XXXXXXXXX";
+            o.KeyStorePath = "keystore file path";
+            o.KeyStorePassword = "keystore file password";
         });
 
         //context.Services.AddSingleton<IEmailSender, NullEmailSender>();
