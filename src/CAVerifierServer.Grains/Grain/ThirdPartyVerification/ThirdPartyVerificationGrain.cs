@@ -1,5 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using AElf;
+using AElf.KeyStore;
 using CAVerifierServer.Account;
 using CAVerifierServer.Grains.Common;
 using CAVerifierServer.Grains.Dto;
@@ -25,6 +27,7 @@ public class ThirdPartyVerificationGrain : Grain<ThirdPartyVerificationState>, I
     private readonly ILogger<ThirdPartyVerificationGrain> _logger;
     private readonly IDistributedCache<AppleKeys> _distributedCache;
     private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
+    private readonly AElfKeyStoreService _aelfKeyStoreService;
 
     public ThirdPartyVerificationGrain(IHttpClientFactory httpClientFactory,
         IOptions<VerifierAccountOptions> verifierAccountOptions,
@@ -32,7 +35,8 @@ public class ThirdPartyVerificationGrain : Grain<ThirdPartyVerificationState>, I
         IObjectMapper objectMapper,
         ILogger<ThirdPartyVerificationGrain> logger,
         IDistributedCache<AppleKeys> distributedCache,
-        JwtSecurityTokenHandler jwtSecurityTokenHandler)
+        JwtSecurityTokenHandler jwtSecurityTokenHandler,
+        AElfKeyStoreService aelfKeyStoreService)
     {
         _httpClientFactory = httpClientFactory;
         _verifierAccountOptions = verifierAccountOptions.Value;
@@ -41,6 +45,7 @@ public class ThirdPartyVerificationGrain : Grain<ThirdPartyVerificationState>, I
         _logger = logger;
         _distributedCache = distributedCache;
         _jwtSecurityTokenHandler = jwtSecurityTokenHandler;
+        _aelfKeyStoreService = aelfKeyStoreService;
     }
 
     public override async Task OnActivateAsync()
@@ -69,9 +74,11 @@ public class ThirdPartyVerificationGrain : Grain<ThirdPartyVerificationState>, I
             tokenDto.GoogleUserExtraInfo.GuardianType = GuardianIdentifierType.Google.ToString();
             tokenDto.GoogleUserExtraInfo.AuthTime = DateTime.UtcNow;
 
+            var privateKey = _aelfKeyStoreService.DecryptKeyStoreFromFile(_verifierAccountOptions.KeyStorePassword,
+                _verifierAccountOptions.KeyStorePath);
             var signatureOutput = CryptographyHelper.GenerateSignature(Convert.ToInt16(GuardianIdentifierType.Google),
                 grainDto.Salt,
-                grainDto.IdentifierHash, _verifierAccountOptions.PrivateKey, grainDto.OperationType);
+                grainDto.IdentifierHash, privateKey.ToHex(), grainDto.OperationType);
 
             tokenDto.Signature = signatureOutput.Signature;
             tokenDto.VerificationDoc = signatureOutput.Data;
@@ -100,11 +107,13 @@ public class ThirdPartyVerificationGrain : Grain<ThirdPartyVerificationState>, I
 
             userInfo.GuardianType = GuardianIdentifierType.Apple.ToString();
             userInfo.AuthTime = DateTime.UtcNow;
-
+            
+            var privateKey = _aelfKeyStoreService.DecryptKeyStoreFromFile(_verifierAccountOptions.KeyStorePassword,
+                _verifierAccountOptions.KeyStorePath);
             var signatureOutput =
                 CryptographyHelper.GenerateSignature(Convert.ToInt16(GuardianIdentifierType.Apple), grainDto.Salt,
                     grainDto.IdentifierHash,
-                    _verifierAccountOptions.PrivateKey, grainDto.OperationType);
+                    privateKey.ToHex(), grainDto.OperationType);
 
             return new GrainResultDto<VerifyAppleTokenGrainDto>
             {

@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using AElf.KeyStore;
 using AutoMapper;
 using CAVerifierServer.Grain.Tests.GuardianIdentifier;
 using CAVerifierServer.Grain.Tests.ThirdParty;
@@ -66,8 +67,8 @@ public class ClusterFixture : IDisposable, ISingletonDependency
 
                     services.Configure<VerifierAccountOptions>(o =>
                     {
-                        o.Address = "XXXXX";
-                        o.PrivateKey = "XXXXX";
+                        o.KeyStorePath = "xxx";
+                        o.KeyStorePassword = "xxx";
                     });
 
                     var dic = new Dictionary<string, int>
@@ -143,6 +144,7 @@ public class ClusterFixture : IDisposable, ISingletonDependency
                         Mapper = sp.GetRequiredService<IMapper>()
                     });
                     services.AddTransient<IMapperAccessor>(provider => provider.GetRequiredService<MapperAccessor>());
+                    services.AddSingleton<AElfKeyStoreService>();
                 })
                 .AddSimpleMessageStreamProvider(CAVerifierServerApplicationConsts.MessageStreamName)
                 .AddMemoryGrainStorage("PubSubStore")
