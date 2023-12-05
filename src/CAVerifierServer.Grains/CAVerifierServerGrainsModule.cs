@@ -1,4 +1,4 @@
-﻿using CAVerifierServer.Grains.Grain;
+﻿using CAVerifierServer.Grains.Common;
 using CAVerifierServer.Grains.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AutoMapper;

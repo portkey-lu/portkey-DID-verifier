@@ -1,9 +1,9 @@
 using System.IdentityModel.Tokens.Jwt;
-using AElf.KeyStore;
 using AutoMapper;
 using CAVerifierServer.Grain.Tests.GuardianIdentifier;
 using CAVerifierServer.Grain.Tests.ThirdParty;
 using CAVerifierServer.Grains;
+using CAVerifierServer.Grains.Common;
 using CAVerifierServer.Grains.Grain;
 using CAVerifierServer.Grains.Grain.ThirdPartyVerification;
 using CAVerifierServer.Grains.Options;

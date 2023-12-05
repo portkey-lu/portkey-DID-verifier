@@ -1,11 +1,10 @@
 using AElf;
 using AElf.KeyStore;
 using CAVerifierServer.Account;
-using CAVerifierServer.Grains.Common;
 using CAVerifierServer.Grains.Options;
 using Microsoft.Extensions.Options;
 
-namespace CAVerifierServer.Grains.Grain;
+namespace CAVerifierServer.Grains.Common;
 
 public interface ISignService
 {
