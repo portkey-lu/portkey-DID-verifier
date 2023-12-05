@@ -14,6 +14,7 @@ public interface ISignService
 public class KeyStoreSignService : ISignService, IDisposable
 {
     private readonly VerifierAccountOptions _verifierAccountOptions;
+    private readonly AElfKeyStoreService _aelfKeyStoreService = new();
 
     public KeyStoreSignService(IOptions<VerifierAccountOptions> verifierAccountOptions)
     {
@@ -23,9 +24,8 @@ public class KeyStoreSignService : ISignService, IDisposable
     public GenerateSignatureOutput Sign(int guardianType, string salt, string guardianIdentifierHash,
         string operationType)
     {
-        var aelfKeyStoreService = new AElfKeyStoreService();
         return CryptographyHelper.GenerateSignature(guardianType, salt,
-            guardianIdentifierHash, aelfKeyStoreService.DecryptKeyStoreFromFile(
+            guardianIdentifierHash, _aelfKeyStoreService.DecryptKeyStoreFromFile(
                 _verifierAccountOptions.KeyStorePassword,
                 _verifierAccountOptions.KeyStorePath).ToHex(), operationType);
     }
@@ -33,5 +33,6 @@ public class KeyStoreSignService : ISignService, IDisposable
     public void Dispose()
     {
         // todo
+        // GC.SuppressFinalize(this);
     }
 }
