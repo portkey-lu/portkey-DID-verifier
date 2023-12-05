@@ -21,6 +21,6 @@ public class CAVerifierServerGrainsModule : AbpModule
             options.Kind = DateTimeKind.Utc;
         });
         Configure<AppleAuthOptions>(configuration.GetSection("AppleAuth"));
-        context.Services.AddSingleton<ISigner, KeyStoreSigner>();
+        context.Services.AddTransient<ISignService, KeyStoreSignService>();
     }
 }

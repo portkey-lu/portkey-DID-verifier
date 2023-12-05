@@ -7,16 +7,16 @@ using Microsoft.Extensions.Options;
 
 namespace CAVerifierServer.Grains.Grain;
 
-public interface ISigner
+public interface ISignService
 {
     GenerateSignatureOutput Sign(int guardianType, string salt, string guardianIdentifierHash, string operationType);
 }
 
-public class KeyStoreSigner : ISigner, IDisposable
+public class KeyStoreSignService : ISignService, IDisposable
 {
     private readonly VerifierAccountOptions _verifierAccountOptions;
 
-    public KeyStoreSigner(IOptions<VerifierAccountOptions> verifierAccountOptions)
+    public KeyStoreSignService(IOptions<VerifierAccountOptions> verifierAccountOptions)
     {
         _verifierAccountOptions = verifierAccountOptions.Value;
     }
@@ -33,5 +33,6 @@ public class KeyStoreSigner : ISigner, IDisposable
 
     public void Dispose()
     {
+        // todo
     }
 }

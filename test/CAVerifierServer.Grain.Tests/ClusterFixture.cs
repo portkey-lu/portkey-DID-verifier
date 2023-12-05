@@ -144,7 +144,7 @@ public class ClusterFixture : IDisposable, ISingletonDependency
                         Mapper = sp.GetRequiredService<IMapper>()
                     });
                     services.AddTransient<IMapperAccessor>(provider => provider.GetRequiredService<MapperAccessor>());
-                    services.AddSingleton<ISigner, KeyStoreSigner>();
+                    services.AddTransient<ISignService, KeyStoreSignService>();
                 })
                 .AddSimpleMessageStreamProvider(CAVerifierServerApplicationConsts.MessageStreamName)
                 .AddMemoryGrainStorage("PubSubStore")
