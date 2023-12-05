@@ -1,4 +1,4 @@
-﻿using AElf.KeyStore;
+﻿using CAVerifierServer.Grains.Grain;
 using CAVerifierServer.Grains.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AutoMapper;
@@ -21,6 +21,6 @@ public class CAVerifierServerGrainsModule : AbpModule
             options.Kind = DateTimeKind.Utc;
         });
         Configure<AppleAuthOptions>(configuration.GetSection("AppleAuth"));
-        context.Services.AddSingleton<AElfKeyStoreService>();
+        context.Services.AddSingleton<ISigner, KeyStoreSigner>();
     }
 }
