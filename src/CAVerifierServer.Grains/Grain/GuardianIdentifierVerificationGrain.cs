@@ -1,4 +1,5 @@
 using System.Text;
+using AElf;
 using CAVerifierServer.Account;
 using CAVerifierServer.Grains.Common;
 using CAVerifierServer.Grains.Dto;
@@ -22,17 +23,17 @@ public class GuardianIdentifierVerificationGrain : Grain<GuardianIdentifierVerif
     private readonly VerifierAccountOptions _verifierAccountOptions;
     private readonly GuardianTypeOptions _guardianTypeOptions;
     private readonly IClock _clock;
-    private readonly ISignService _signService;
+    private readonly ISigner _signer;
     
     public GuardianIdentifierVerificationGrain(IOptions<VerifierCodeOptions> verifierCodeOptions,
         IOptions<VerifierAccountOptions> verifierAccountOptions, IOptions<GuardianTypeOptions> guardianTypeOptions,
-        IClock clock, ISignService signService)
+        IClock clock, ISigner signer)
     {
         _clock = clock;
         _guardianTypeOptions = guardianTypeOptions.Value;
         _verifierCodeOptions = verifierCodeOptions.Value;
         _verifierAccountOptions = verifierAccountOptions.Value;
-        _signService = signService;
+        _signer = signer;
     }
 
     private Task<string> GetCodeAsync(int length)
@@ -147,15 +148,17 @@ public class GuardianIdentifierVerificationGrain : Grain<GuardianIdentifierVerif
         guardianTypeVerification.Salt = input.Salt;
         guardianTypeVerification.GuardianIdentifierHash = input.GuardianIdentifierHash;
         var guardianTypeCode = _guardianTypeOptions.GuardianTypeDic[guardianTypeVerification.GuardianType];
-        var signature = _signService.Sign(guardianTypeCode, guardianTypeVerification.Salt,
-            guardianTypeVerification.GuardianIdentifierHash, input.OperationType);
-        guardianTypeVerification.VerificationDoc = signature.Data;
-        guardianTypeVerification.Signature = signature.Signature;
+        var data = CryptographyHelper.ConvertHashFromData(_signer.GetAddress(),
+            guardianTypeCode, guardianTypeVerification.Salt, guardianTypeVerification.GuardianIdentifierHash,
+            input.OperationType);
+        var signature = _signer.Sign(HashHelper.ComputeFrom(data));
+        guardianTypeVerification.VerificationDoc = data;
+        guardianTypeVerification.Signature = signature.ToHex();
         dto.Success = true;
         dto.Data = new UpdateVerifierSignatureDto
         {
-            Data = signature.Data,
-            Signature = signature.Signature
+            Data = data,
+            Signature = signature.ToHex()
         };
         await WriteStateAsync();
         return dto;

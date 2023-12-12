@@ -1,5 +1,4 @@
-﻿using CAVerifierServer.Grains.Common;
-using CAVerifierServer.Grains.Options;
+﻿using CAVerifierServer.Grains.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
@@ -21,6 +20,5 @@ public class CAVerifierServerGrainsModule : AbpModule
             options.Kind = DateTimeKind.Utc;
         });
         Configure<AppleAuthOptions>(configuration.GetSection("AppleAuth"));
-        context.Services.AddTransient<ISignService, KeyStoreSignService>();
     }
 }

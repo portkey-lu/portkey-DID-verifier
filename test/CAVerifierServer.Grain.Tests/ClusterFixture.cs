@@ -67,8 +67,8 @@ public class ClusterFixture : IDisposable, ISingletonDependency
 
                     services.Configure<VerifierAccountOptions>(o =>
                     {
-                        o.KeyStorePath = "xxx";
-                        o.KeyStorePassword = "xxx";
+                        o.KeyStorePath = "/Users/jasonlu/.local/share/aelf/keys/YzKtUi2Vj27Tgv5XLZtktWVscqBN6L25ueRhJAaTEAvTkB4j1.json";
+                        o.KeyStorePassword = "admin123";
                     });
 
                     var dic = new Dictionary<string, int>
@@ -144,7 +144,7 @@ public class ClusterFixture : IDisposable, ISingletonDependency
                         Mapper = sp.GetRequiredService<IMapper>()
                     });
                     services.AddTransient<IMapperAccessor>(provider => provider.GetRequiredService<MapperAccessor>());
-                    services.AddTransient<ISignService, KeyStoreSignService>();
+                    services.AddTransient<ISigner, KeyStoreSigner>();
                 })
                 .AddSimpleMessageStreamProvider(CAVerifierServerApplicationConsts.MessageStreamName)
                 .AddMemoryGrainStorage("PubSubStore")
