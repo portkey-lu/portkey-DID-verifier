@@ -67,8 +67,8 @@ public class ClusterFixture : IDisposable, ISingletonDependency
 
                     services.Configure<VerifierAccountOptions>(o =>
                     {
-                        o.KeyStorePath = "/Users/jasonlu/.local/share/aelf/keys/YzKtUi2Vj27Tgv5XLZtktWVscqBN6L25ueRhJAaTEAvTkB4j1.json";
-                        o.KeyStorePassword = "admin123";
+                        o.KeyStorePath = "";
+                        o.KeyStorePassword = "";
                     });
 
                     var dic = new Dictionary<string, int>

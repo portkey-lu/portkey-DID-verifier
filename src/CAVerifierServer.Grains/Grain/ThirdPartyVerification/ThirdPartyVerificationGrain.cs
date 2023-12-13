@@ -73,7 +73,7 @@ public class ThirdPartyVerificationGrain : Grain<ThirdPartyVerificationState>, I
             tokenDto.GoogleUserExtraInfo.GuardianType = GuardianIdentifierType.Google.ToString();
             tokenDto.GoogleUserExtraInfo.AuthTime = DateTime.UtcNow;
 
-            var data = CryptographyHelper.ConvertHashFromData(_signer.GetAddress(),
+            var data = VerificationParametersProcessor.GenerateSignatureHashString(_signer.GetAddress(),
                 Convert.ToInt16(GuardianIdentifierType.Google), grainDto.Salt, 
                 grainDto.IdentifierHash, grainDto.OperationType);
             var signature = _signer.Sign(HashHelper.ComputeFrom(data));
@@ -106,7 +106,7 @@ public class ThirdPartyVerificationGrain : Grain<ThirdPartyVerificationState>, I
             userInfo.GuardianType = GuardianIdentifierType.Apple.ToString();
             userInfo.AuthTime = DateTime.UtcNow;
             
-            var data = CryptographyHelper.ConvertHashFromData(_signer.GetAddress(),
+            var data = VerificationParametersProcessor.GenerateSignatureHashString(_signer.GetAddress(),
                 Convert.ToInt16(GuardianIdentifierType.Apple), grainDto.Salt, 
                 grainDto.IdentifierHash, grainDto.OperationType);
             var signature = _signer.Sign(HashHelper.ComputeFrom(data));

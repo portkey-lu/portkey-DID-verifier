@@ -15,7 +15,6 @@ public interface ISigner : IDisposable
 public class KeyStoreSigner : ISigner
 {
     private readonly byte[] _privateKey;
-    private readonly byte[] _publicKey;
     private readonly Address _address;
     private readonly AElfKeyStoreService _aelfKeyStoreService = new();
 
@@ -24,8 +23,8 @@ public class KeyStoreSigner : ISigner
         _privateKey = _aelfKeyStoreService.DecryptKeyStoreFromFile(
             verifierAccountOptions.Value.KeyStorePassword,
             verifierAccountOptions.Value.KeyStorePath);
-        _publicKey = CryptoHelper.FromPrivateKey(_privateKey).PublicKey;
-        _address = Address.FromPublicKey(_publicKey);
+        var publicKey = CryptoHelper.FromPrivateKey(_privateKey).PublicKey;
+        _address = Address.FromPublicKey(publicKey);
     }
 
     public byte[] Sign(Hash dataHash)

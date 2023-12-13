@@ -148,7 +148,7 @@ public class GuardianIdentifierVerificationGrain : Grain<GuardianIdentifierVerif
         guardianTypeVerification.Salt = input.Salt;
         guardianTypeVerification.GuardianIdentifierHash = input.GuardianIdentifierHash;
         var guardianTypeCode = _guardianTypeOptions.GuardianTypeDic[guardianTypeVerification.GuardianType];
-        var data = CryptographyHelper.ConvertHashFromData(_signer.GetAddress(),
+        var data = VerificationParametersProcessor.GenerateSignatureHashString(_signer.GetAddress(),
             guardianTypeCode, guardianTypeVerification.Salt, guardianTypeVerification.GuardianIdentifierHash,
             input.OperationType);
         var signature = _signer.Sign(HashHelper.ComputeFrom(data));
