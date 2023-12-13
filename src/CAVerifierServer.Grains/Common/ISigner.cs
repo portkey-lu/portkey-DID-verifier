@@ -14,9 +14,10 @@ public interface ISigner : IDisposable
 
 public class KeyStoreSigner : ISigner
 {
-    private readonly byte[] _privateKey;
+    private byte[] _privateKey;
     private readonly Address _address;
     private readonly AElfKeyStoreService _aelfKeyStoreService = new();
+    private bool _disposed;
 
     public KeyStoreSigner(IOptions<VerifierAccountOptions> verifierAccountOptions)
     {
@@ -39,7 +40,31 @@ public class KeyStoreSigner : ISigner
 
     public void Dispose()
     {
-        // todo
-        // GC.SuppressFinalize(this);
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            if (_privateKey != null)
+            {
+                Array.Clear(_privateKey, 0, _privateKey.Length);
+                _privateKey = null;
+            }
+        }
+
+        _disposed = true;
+    }
+
+    ~KeyStoreSigner()
+    {
+        Dispose(false);
     }
 }
