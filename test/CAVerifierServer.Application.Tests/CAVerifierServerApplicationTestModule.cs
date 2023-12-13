@@ -52,8 +52,7 @@ public class CAVerifierServerApplicationTestModule : AbpModule
             ChainId = "AELF",
             BaseUrl = "http://127.0.0.1:8000",
             ContractAddress = "XXXXXX",
-            IsMainChain = true,
-            PrivateKey = "XXXXXXX"
+            IsMainChain = true
         };
         var dic = new Dictionary<string, ChainInfo>();
         dic.Add("MockChainId", chainInfo);

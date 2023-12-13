@@ -1,7 +1,8 @@
 using System.Threading.Tasks;
 using AElf;
+using AElf.Client;
 using AElf.Client.Dto;
-using AElf.Client.Service;
+using AElf.Types;
 using CAVerifierServer.Application;
 using CAVerifierServer.Options;
 using Google.Protobuf;
@@ -21,13 +22,14 @@ public class ContractsProvider : IContractsProvider, ISingletonDependency
     {
         var client = new AElfClient(chainInfo.BaseUrl);
         await client.IsConnectedAsync();
-        var ownAddress = client.GetAddressFromPrivateKey(chainInfo.PrivateKey);
-        var methodName = "GetCAServers";
+        const string methodName = "GetCAServers";
+        const string commonPrivateKey = AElfClientConstants.DefaultPrivateKey;
+        var ownAddress = Address.FromPublicKey(ByteArrayHelper.HexStringToByteArray(commonPrivateKey)).ToBase58();
         var param = new Empty();
         var transaction = await client.GenerateTransactionAsync(ownAddress,
             chainInfo.ContractAddress,
             methodName, param);
-        var txWithSign = client.SignTransaction(chainInfo.PrivateKey, transaction);
+        var txWithSign = client.SignTransaction(commonPrivateKey, transaction);
         var result = await client.ExecuteTransactionAsync(new ExecuteTransactionDto
         {
             RawTransaction = txWithSign.ToByteArray().ToHex()
